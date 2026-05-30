@@ -49,16 +49,13 @@ subprojects {
         }
     }
 
-    // Apply detekt to every subproject that has Kotlin source
+    // Detekt runs standalone; harmless on non-Kotlin modules, no-op when there are no sources.
+    // The plugin already wires `detekt` into the `check` lifecycle by default.
     apply(plugin = "io.gitlab.arturbosch.detekt")
 
     configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
         config.setFrom(rootProject.file("config/detekt/detekt.yml"))
         buildUponDefaultConfig = false
         allRules = false
-    }
-
-    tasks.matching { it.name == "detekt" }.configureEach {
-        tasks.findByName("check")?.dependsOn(this)
     }
 }

@@ -44,14 +44,15 @@ jobs:
             p/secrets
         continue-on-error: true
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
           scan-ref: .
           format: table
-          exit-code: '1'
           severity: CRITICAL,HIGH
           ignore-unfixed: true
+        # Advisory-only, consistent with Semgrep above: report findings without
+        # failing the check. Drop continue-on-error and add exit-code: '1' to gate.
         continue-on-error: true
 
   publish:
