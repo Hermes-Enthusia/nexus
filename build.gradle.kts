@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.21" apply false
     kotlin("plugin.serialization") version "2.0.21" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.8" apply false
 }
 
 group = "net.badgersmc"
@@ -46,5 +47,18 @@ subprojects {
                 }
             }
         }
+    }
+
+    // Apply detekt to every subproject that has Kotlin source
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
+    configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+        config.setFrom(rootProject.file("config/detekt/detekt.yml"))
+        buildUponDefaultConfig = false
+        allRules = false
+    }
+
+    tasks.matching { it.name == "detekt" }.configureEach {
+        tasks.findByName("check")?.dependsOn(this)
     }
 }
